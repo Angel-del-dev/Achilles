@@ -3,6 +3,8 @@ Language: **Delphi**
 Date creation: **2024-11-10**  
 APIs: **ActiveX**, **Windows Media player**  
 Architecture: **32bits**
+# Notes
+**When executing for the first time, it will create all necessary files**
 # Functionalities
 * Add a specific **Video** file
 * Add all **Video** files from a folder (**Recursive**)
