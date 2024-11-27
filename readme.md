@@ -14,6 +14,7 @@ Architecture: **32bits**
     * Rename focused **playlist**
     * Copy Selected **Video** to another **playlist**
     * Remove Selected **Video** from focused **playlist**
+    * Change focused **playlist**
 
 ## Uknown release
 * Advanced options
