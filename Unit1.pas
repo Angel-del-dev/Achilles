@@ -16,8 +16,6 @@ type
     MediaList: TListBox;
     Loader: TPanel;
     Label1: TLabel;
-    FilteredCombobox: TComboBox;
-    SearchItem: TSearchBox;
     FoundLabel: TLabel;
     MainToolBar: TToolBar;
     OptionsButton: TSpeedButton;
@@ -33,22 +31,24 @@ type
     Playlisteditor1: TMenuItem;
     N2: TMenuItem;
     Removeselected1: TMenuItem;
+    lbCurrentPlaylist: TLabel;
+    PlaylistsPopup: TPopupMenu;
+    Removeallmedia1: TMenuItem;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure MediaListClick(Sender: TObject);
     procedure AddFileClick(Sender: TObject);
     procedure VideoPlayerPlayStateChange(ASender: TObject; NewState: Integer);
     procedure ScanInFolderClick(Sender: TObject);
-    procedure SearchItemKeyUp(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
-    procedure FilteredComboboxChange(Sender: TObject);
     procedure OptionsButtonClick(Sender: TObject);
+    procedure lbCurrentPlaylistClick(Sender: TObject);
+    procedure Removeallmedia1Click(Sender: TObject);
   private
     { Private declarations }
     function ReadFile(FileRoute:string):string;
     function GetLastSeparatedByDelimiter(Delimiter: Char; Text: string):string;
     procedure ParseAndFormTree(FileRoute: string);
-    procedure FormTree(FileArray: TJSONArray);
+    procedure FormTree(Configuration: TJSONObject);
     procedure WriteToFile(Route: string; Data: string);
     function SavedListToString():string;
     procedure RecursiveFolderScan(Route: string);
@@ -128,17 +128,13 @@ begin
   { 1 = Media stoped }
   if NewState = 1 then
   begin
-      VideoPlayer.Visible := False;
-      VideoPlayer.SendToBack;
+      VideoPlayer.URL := '';
   end;
   { 3 = Media loaded }
   if NewState = 3 then
   begin
       Loader.Visible := False;
       Loader.SendToBack;
-
-      VideoPlayer.BringToFront;
-      VideoPlayer.Visible := True;
   end;
 end;
 
@@ -156,18 +152,28 @@ begin
    end;
 end;
 
-procedure TForm1.FormTree(FileArray: TJSONArray);
+procedure TForm1.FormTree(Configuration: TJSONObject);
   var
     FileRoute: string;
     I: integer;
     Route: string;
+    Pair: TJSONPair;
+    NewItem: TMenuItem;
+    JsonArray: TJSONArray;
 begin
-
-    for I := 0 to FileArray.Size - 1 do
+    for Pair in Configuration do
     begin
-      Route := FileArray.Get(I).Value;
-      MediaList.Items.Add(GetLastSeparatedByDelimiter('\', Route));
-      SavedFileList.Add(Route);
+        NewItem := TMenuItem.Create(PlaylistsPopup); // Create a new menu item
+        NewItem.Caption := Pair.JsonString.Value;
+        {NewItem.OnClick := ; // Assign an event handler   }
+        lbCurrentPlaylist.PopupMenu.Items.Add(NewItem);
+        JsonArray := (Pair.JsonValue as TJSONArray);
+        for I := 0 to JsonArray.Count -1 do
+        begin
+            Route := JsonArray.Get(I).Value;
+            MediaList.Items.Add(GetLastSeparatedByDelimiter('\', Route));
+            SavedFileList.Add(Route);
+        end;
     end;
 end;
 
@@ -183,11 +189,11 @@ begin
   JSONObject := TJSONObject.ParseJSONValue(FileContents) as TJSONObject;
   if JSONObject <> nil then
   begin
-    if not JSONObject.TryGetValue('contents', JSONArray) then
+    if not JSONObject.TryGetValue('All', JSONArray) then
       showMessage('Data file is corrupted')
     else
     begin
-      FormTree(JSONArray);
+      FormTree(JSONObject);
     end;
     
   end;
@@ -204,7 +210,7 @@ begin
   begin
     StringList := TStringList.Create;
     try
-        StringList.Add('{"contents": []}');
+        StringList.Add('{"All": []}');
         StringList.SaveToFile(DataFile);
     finally
       StringList.Free;
@@ -227,7 +233,7 @@ begin
       if SavedFileList.IndexOf(openDialog.FileName) < 0 then
       begin
         SavedFileList.Add(openDialog.FileName);
-        WriteToFile(DataFile, Format('{"contents": [%s]}', [SavedListToString()]));
+        WriteToFile(DataFile, Format('{"All": [%s]}', [SavedListToString()]));
         ParseAndFormTree(DataFile);
       end;
     end;
@@ -247,10 +253,6 @@ begin
     SetLength(Masks, 2);
     Masks[0] := '*.mp4'; Masks[1] := '*.mkv';
 
-    {if CheckboxEmptySavedAll.Checked then
-      SavedFileList.Clear;}
-
-
     for Mask in Masks do
     begin
         FileList := TDirectory.GetFiles(Route, Mask, TSearchOption.soAllDirectories);
@@ -263,6 +265,8 @@ begin
     end;
 end;
 
+
+
 procedure TForm1.ScanInFolderClick(Sender: TObject);
   var
     Directory: string;
@@ -270,42 +274,9 @@ begin
     if SelectDirectory('Select a folder', '', Directory) then
     begin
       RecursiveFolderScan(Directory);
-      WriteToFile(DataFile, Format('{"contents": [%s]}', [SavedListToString()]));
+      WriteToFile(DataFile, Format('{"All": [%s]}', [SavedListToString()]));
       ParseAndFormTree(DataFile);
     end;
-end;
-
-procedure TForm1.SearchItemKeyUp(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-  var
-    Item: string;
-
-begin
-  FoundLabel.Caption := '';
-  FilteredCombobox.Clear;
-  FilteredCombobox.Visible := False;
-  if SearchItem.Text <> '' then
-  begin
-    for Item in SavedFileList do
-    begin
-        if not LowerCase(Item).Contains(LowerCase(SearchItem.Text)) then
-          continue;
-        FilteredCombobox.Items.Add(GetLastSeparatedByDelimiter('\', Item));
-    end;
-    FoundLabel.Caption := 'Found: '+FilteredCombobox.Items.Count.ToString;
-    FilteredComboBox.Visible := True;
-  end;
-end;
-
-procedure TForm1.FilteredComboboxChange(Sender: TObject);
-  var SelectedIndex: integer;
-begin
-  SelectedIndex := MediaList.Items.IndexOf(FilteredCombobox.Text);
-  if SelectedIndex < 0 then
-    ShowMessage('Given media was not found');
-
-  if SelectedIndex >= 0 then
-    MediaList.ItemIndex := SelectedIndex;
 end;
 
 procedure TForm1.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -320,6 +291,21 @@ begin
   GetCursorPos(Point);
   OptionsPopupButton.Popup(Point.x, Point.y);
 end;
+
+procedure TForm1.lbCurrentPlaylistClick(Sender: TObject);
+ var Point: TPoint;
+begin
+  GetCursorPos(Point);
+  lbCurrentPlaylist.PopupMenu.Popup(Point.x, Point.y);
+end;
+
+procedure TForm1.Removeallmedia1Click(Sender: TObject);
+begin
+   SavedFileList.Clear;
+   WriteToFile(DataFile, Format('{"All": [%s]}', [SavedListToString()]));
+   ParseAndFormTree(DataFile);
+end;
+
 
 begin
   SavedFileList := TStringList.Create;

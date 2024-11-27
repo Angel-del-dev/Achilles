@@ -3678,11 +3678,13 @@ object Form1: TForm1
     ExplicitHeight = 561
     object Label1: TLabel
       AlignWithMargins = True
-      Left = 200
-      Top = 254
-      Width = 177
-      Height = 74
+      Left = 4
+      Top = 4
+      Width = 992
+      Height = 592
+      Align = alClient
       Alignment = taCenter
+      AutoSize = False
       Caption = 'Loading video Please wait...'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -3690,7 +3692,12 @@ object Form1: TForm1
       Font.Name = 'Segoe UI'
       Font.Style = []
       ParentFont = False
+      Layout = tlCenter
       WordWrap = True
+      ExplicitLeft = -8
+      ExplicitTop = 0
+      ExplicitWidth = 1008
+      ExplicitHeight = 599
     end
   end
   object ControlsPanel: TPanel
@@ -3709,66 +3716,30 @@ object Form1: TForm1
       Height = 15
       Alignment = taRightJustify
     end
-    object VideoPlayer: TWindowsMediaPlayer
-      AlignWithMargins = True
-      Left = 4
-      Top = 27
-      Width = 992
-      Height = 569
-      Align = alClient
-      TabOrder = 3
-      Visible = False
-      OnPlayStateChange = VideoPlayerPlayStateChange
-      ExplicitTop = 4
-      ExplicitWidth = 245
-      ExplicitHeight = 240
-      ControlData = {
-        000300000800000000000500000000000000F03F030000000000050000000000
-        0000000008000200000000000300010000000B00FFFF0300000000000B00FFFF
-        08000200000000000300320000000B00000008000A000000660075006C006C00
-        00000B0000000B0000000B00FFFF0B00FFFF0B00000008000200000000000800
-        020000000000080002000000000008000200000000000B00000087660000CF3A
-        0000}
-    end
     object MediaList: TListBox
-      Left = 3
-      Top = 187
-      Width = 581
-      Height = 374
+      Left = 1
+      Top = 30
+      Width = 320
+      Height = 569
+      Align = alLeft
       ItemHeight = 15
       TabOrder = 0
       OnDblClick = MediaListClick
-    end
-    object FilteredCombobox: TComboBox
-      Left = 240
-      Top = 136
-      Width = 321
-      Height = 23
-      ParentShowHint = False
-      ShowHint = True
-      TabOrder = 1
-      TextHint = 'List of found items'
-      Visible = False
-      OnChange = FilteredComboboxChange
-    end
-    object SearchItem: TSearchBox
-      Left = 16
-      Top = 136
-      Width = 145
-      Height = 23
-      TabOrder = 2
-      TextHint = 'Filter by name'
-      OnKeyUp = SearchItemKeyUp
+      ExplicitLeft = -2
+      ExplicitHeight = 575
     end
     object MainToolBar: TToolBar
-      Left = 1
-      Top = 1
-      Width = 998
+      AlignWithMargins = True
+      Left = 4
+      Top = 4
+      Width = 992
       Height = 23
       ButtonHeight = 23
       Caption = 'View'
-      TabOrder = 4
-      ExplicitWidth = 582
+      TabOrder = 2
+      ExplicitLeft = 1
+      ExplicitTop = 1
+      ExplicitWidth = 998
       object OptionsButton: TSpeedButton
         Left = 0
         Top = 0
@@ -3778,11 +3749,46 @@ object Form1: TForm1
         Flat = True
         OnClick = OptionsButtonClick
       end
+      object lbCurrentPlaylist: TLabel
+        Left = 49
+        Top = 0
+        Width = 928
+        Height = 23
+        Margins.Left = 10
+        Align = alClient
+        Alignment = taRightJustify
+        AutoSize = False
+        Caption = 'Playlist: All'
+        PopupMenu = PlaylistsPopup
+        Layout = tlCenter
+        OnClick = lbCurrentPlaylistClick
+      end
+    end
+    object VideoPlayer: TWindowsMediaPlayer
+      AlignWithMargins = True
+      Left = 324
+      Top = 33
+      Width = 672
+      Height = 563
+      Align = alClient
+      TabOrder = 1
+      OnPlayStateChange = VideoPlayerPlayStateChange
+      ExplicitLeft = 4
+      ExplicitTop = 4
+      ExplicitWidth = 245
+      ExplicitHeight = 240
+      ControlData = {
+        000300000800000000000500000000000000F03F030000000000050000000000
+        0000000008000200000000000300010000000B00FFFF0300000000000B00FFFF
+        08000200000000000300320000000B00000008000A000000660075006C006C00
+        00000B0000000B0000000B00FFFF0B00FFFF0B00000008000200000000000800
+        020000000000080002000000000008000200000000000B00000074450000303A
+        0000}
     end
   end
   object OptionsPopupButton: TPopupMenu
-    Left = 544
-    Top = 40
+    Left = 8
+    Top = 32
     object Addfile1: TMenuItem
       Caption = 'Playlist'
       object Createplaylist1: TMenuItem
@@ -3811,6 +3817,10 @@ object Form1: TForm1
       object Removeselected1: TMenuItem
         Caption = 'Remove selected media'
       end
+      object Removeallmedia1: TMenuItem
+        Caption = 'Remove all media'
+        OnClick = Removeallmedia1Click
+      end
     end
     object Modes1: TMenuItem
       Caption = 'Modes'
@@ -3818,5 +3828,9 @@ object Form1: TForm1
         Caption = 'Playlist editor'
       end
     end
+  end
+  object PlaylistsPopup: TPopupMenu
+    Left = 40
+    Top = 32
   end
 end
