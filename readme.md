@@ -1,25 +1,38 @@
-# Custom videplayer
+# **Achilles** Video player
 Language: **Delphi**  
 Date creation: **2024-11-10**  
-APIs: **ActiveX**, **Windows Media player**  
+APIs: **ActiveX**, **Windows Media player** *(legacy)*  
 Architecture: **32bits**
 # Notes
 **When executing for the first time, it will create all necessary files**
-# Functionalities
+
+# TODO
+## Next release
+* Playlist
+    * Create new **playlist**
+    * Remove focused **playlist**
+    * Rename focused **playlist**
+    * Copy Selected **Video** to another **playlist**
+    * Remove Selected **Video** from focused **playlist**
+
+## Uknown release
+* Advanced options
+    * From the focused **playlist**, automatically generate **playlists** with similarly named **Video**
+        * Only if the count of total items is >= 2
+        * The name of the playlist might be a fixed size  random string waiting for the user to rename it
+* Upgrade architecture to 64bit
+    * Change Windows Media Player API for a more suitable component
+
+# Features
 * Add a specific **Video** file
 * Add all **Video** files from a folder (**Recursive**)
-    * CheckBox to remove old saved Data
-* Filter by name
-    * OnKeyUp
-        * Displays a **label** next to the input to show the amount of similar items
-        * Displays a **ComboBox** with every similar item
-* **ComboBox** width similar items
-    * Click
-        * The item is selected in the **ListBox** container ready for the **User's OnClick** event
+* Remove all saved **Video** from **playlists**
 * Select a **Video**
-    * OnClick
-        * A loader is displayed and when the **Video** is loaded it disapears and the **Selected Video** starts playing
+    * OnDblClickClick
+        * A loader is displayed
+        * When the **Video** is loaded the loader disapears and the **Selected Video** starts playing
 
 * Watching a **Video**
     * OnStop
-        * The Video disapears and the previous screen is **shown**
+        * The **Video** stops playing
+        * It is possible to replay the **Video** by pressing the play video
