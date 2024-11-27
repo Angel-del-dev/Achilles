@@ -2,15 +2,12 @@ object Form1: TForm1
   Left = 0
   Top = 0
   Anchors = [akLeft, akTop, akRight, akBottom]
-  BorderIcons = [biSystemMenu]
-  Caption = 'Custom video player'
-  ClientHeight = 561
-  ClientWidth = 584
+  Caption = 'Achilles'
+  ClientHeight = 600
+  ClientWidth = 1000
   Color = clBtnFace
-  Constraints.MaxHeight = 600
-  Constraints.MaxWidth = 600
   Constraints.MinHeight = 600
-  Constraints.MinWidth = 600
+  Constraints.MinWidth = 1000
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
@@ -3672,21 +3669,19 @@ object Form1: TForm1
   object Loader: TPanel
     Left = 0
     Top = 0
-    Width = 584
-    Height = 561
+    Width = 1000
+    Height = 600
     Align = alClient
     TabOrder = 1
     Visible = False
-    ExplicitLeft = 1
-    ExplicitTop = 1
-    ExplicitWidth = 582
-    ExplicitHeight = 559
+    ExplicitWidth = 584
+    ExplicitHeight = 561
     object Label1: TLabel
       AlignWithMargins = True
       Left = 200
       Top = 254
-      Width = 197
-      Height = 97
+      Width = 177
+      Height = 74
       Alignment = taCenter
       Caption = 'Loading video Please wait...'
       Font.Charset = DEFAULT_CHARSET
@@ -3701,10 +3696,12 @@ object Form1: TForm1
   object ControlsPanel: TPanel
     Left = 0
     Top = 0
-    Width = 584
-    Height = 561
+    Width = 1000
+    Height = 600
     Align = alClient
     TabOrder = 0
+    ExplicitWidth = 584
+    ExplicitHeight = 561
     object FoundLabel: TLabel
       Left = 231
       Top = 139
@@ -3712,25 +3709,26 @@ object Form1: TForm1
       Height = 15
       Alignment = taRightJustify
     end
-    object AddFile: TButton
+    object VideoPlayer: TWindowsMediaPlayer
       AlignWithMargins = True
-      Left = 16
-      Top = 13
-      Width = 73
-      Height = 25
-      Caption = 'File'
-      TabOrder = 0
-      OnClick = AddFileClick
-    end
-    object ScanInFolder: TButton
-      AlignWithMargins = True
-      Left = 16
-      Top = 44
-      Width = 73
-      Height = 25
-      Caption = 'Scan folder'
-      TabOrder = 1
-      OnClick = ScanInFolderClick
+      Left = 4
+      Top = 27
+      Width = 992
+      Height = 569
+      Align = alClient
+      TabOrder = 3
+      Visible = False
+      OnPlayStateChange = VideoPlayerPlayStateChange
+      ExplicitTop = 4
+      ExplicitWidth = 245
+      ExplicitHeight = 240
+      ControlData = {
+        000300000800000000000500000000000000F03F030000000000050000000000
+        0000000008000200000000000300010000000B00FFFF0300000000000B00FFFF
+        08000200000000000300320000000B00000008000A000000660075006C006C00
+        00000B0000000B0000000B00FFFF0B00FFFF0B00000008000200000000000800
+        020000000000080002000000000008000200000000000B00000087660000CF3A
+        0000}
     end
     object MediaList: TListBox
       Left = 3
@@ -3738,16 +3736,8 @@ object Form1: TForm1
       Width = 581
       Height = 374
       ItemHeight = 15
-      TabOrder = 2
-      OnClick = MediaListClick
-    end
-    object CheckboxEmptySavedAll: TCheckBox
-      Left = 104
-      Top = 47
-      Width = 273
-      Height = 17
-      Caption = 'Remove old data before including the new files'
-      TabOrder = 3
+      TabOrder = 0
+      OnDblClick = MediaListClick
     end
     object FilteredCombobox: TComboBox
       Left = 240
@@ -3756,7 +3746,7 @@ object Form1: TForm1
       Height = 23
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 4
+      TabOrder = 1
       TextHint = 'List of found items'
       Visible = False
       OnChange = FilteredComboboxChange
@@ -3766,31 +3756,67 @@ object Form1: TForm1
       Top = 136
       Width = 145
       Height = 23
-      TabOrder = 5
+      TabOrder = 2
       TextHint = 'Filter by name'
       OnKeyUp = SearchItemKeyUp
     end
-    object VideoPlayer: TWindowsMediaPlayer
-      AlignWithMargins = True
-      Left = 4
-      Top = 4
-      Width = 576
-      Height = 553
-      Align = alClient
-      TabOrder = 6
-      Visible = False
-      OnPlayStateChange = VideoPlayerPlayStateChange
-      ExplicitLeft = 3
-      ExplicitTop = 3
-      ExplicitWidth = 245
-      ExplicitHeight = 240
-      ControlData = {
-        000300000800000000000500000000000000F03F030000000000050000000000
-        0000000008000200000000000300010000000B00FFFF0300000000000B00FFFF
-        08000200000000000300320000000B00000008000A000000660075006C006C00
-        00000B0000000B0000000B00FFFF0B00FFFF0B00000008000200000000000800
-        020000000000080002000000000008000200000000000B000000883B00002739
-        0000}
+    object MainToolBar: TToolBar
+      Left = 1
+      Top = 1
+      Width = 998
+      Height = 23
+      ButtonHeight = 23
+      Caption = 'View'
+      TabOrder = 4
+      ExplicitWidth = 582
+      object OptionsButton: TSpeedButton
+        Left = 0
+        Top = 0
+        Width = 49
+        Height = 23
+        Caption = 'Options'
+        Flat = True
+        OnClick = OptionsButtonClick
+      end
+    end
+  end
+  object OptionsPopupButton: TPopupMenu
+    Left = 544
+    Top = 40
+    object Addfile1: TMenuItem
+      Caption = 'Playlist'
+      object Createplaylist1: TMenuItem
+        Caption = 'Create'
+      end
+      object Rename1: TMenuItem
+        Caption = 'Rename current playlist'
+      end
+      object Removeplaylist1: TMenuItem
+        Caption = 'Remove current playlist'
+      end
+      object N1: TMenuItem
+        Caption = '-'
+      end
+      object Addmedia1: TMenuItem
+        Caption = 'Add media'
+        OnClick = AddFileClick
+      end
+      object Addallmediafromfolder1: TMenuItem
+        Caption = 'Add all media from folder'
+        OnClick = ScanInFolderClick
+      end
+      object N2: TMenuItem
+        Caption = '-'
+      end
+      object Removeselected1: TMenuItem
+        Caption = 'Remove selected media'
+      end
+    end
+    object Modes1: TMenuItem
+      Caption = 'Modes'
+      object Playlisteditor1: TMenuItem
+        Caption = 'Playlist editor'
+      end
     end
   end
 end

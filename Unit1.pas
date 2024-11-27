@@ -7,21 +7,32 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.OleCtrls, WMPLib_TLB, Vcl.StdCtrls,
   Vcl.ExtCtrls, Vcl.ComCtrls, System.JSON, System.IOUtils, ActiveX,
   Vcl.OleServer, Vcl.FileCtrl, Vcl.Menus, Vcl.ToolWin, Vcl.ActnMan,
-  Vcl.ActnCtrls, Vcl.ActnMenus, Vcl.ExtDlgs, Vcl.WinXCtrls;
+  Vcl.ActnCtrls, Vcl.ActnMenus, Vcl.ExtDlgs, Vcl.WinXCtrls, Vcl.Buttons;
 
 type
   TForm1 = class(TForm)
     VideoPlayer: TWindowsMediaPlayer;
     ControlsPanel: TPanel;
-    AddFile: TButton;
-    ScanInFolder: TButton;
     MediaList: TListBox;
     Loader: TPanel;
     Label1: TLabel;
-    CheckboxEmptySavedAll: TCheckBox;
     FilteredCombobox: TComboBox;
     SearchItem: TSearchBox;
     FoundLabel: TLabel;
+    MainToolBar: TToolBar;
+    OptionsButton: TSpeedButton;
+    OptionsPopupButton: TPopupMenu;
+    Addfile1: TMenuItem;
+    Addmedia1: TMenuItem;
+    Addallmediafromfolder1: TMenuItem;
+    N1: TMenuItem;
+    Createplaylist1: TMenuItem;
+    Removeplaylist1: TMenuItem;
+    Rename1: TMenuItem;
+    Modes1: TMenuItem;
+    Playlisteditor1: TMenuItem;
+    N2: TMenuItem;
+    Removeselected1: TMenuItem;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure MediaListClick(Sender: TObject);
@@ -31,6 +42,7 @@ type
     procedure SearchItemKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure FilteredComboboxChange(Sender: TObject);
+    procedure OptionsButtonClick(Sender: TObject);
   private
     { Private declarations }
     function ReadFile(FileRoute:string):string;
@@ -235,8 +247,8 @@ begin
     SetLength(Masks, 2);
     Masks[0] := '*.mp4'; Masks[1] := '*.mkv';
 
-    if CheckboxEmptySavedAll.Checked then
-      SavedFileList.Clear;
+    {if CheckboxEmptySavedAll.Checked then
+      SavedFileList.Clear;}
 
 
     for Mask in Masks do
@@ -300,6 +312,13 @@ procedure TForm1.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   VideoPlayer.Free;
   SavedFileList.Free;
+end;
+
+procedure TForm1.OptionsButtonClick(Sender: TObject);
+  var Point: TPoint;
+begin
+  GetCursorPos(Point);
+  OptionsPopupButton.Popup(Point.x, Point.y);
 end;
 
 begin
