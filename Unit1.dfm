@@ -3674,8 +3674,6 @@ object Form1: TForm1
     Align = alClient
     TabOrder = 1
     Visible = False
-    ExplicitWidth = 584
-    ExplicitHeight = 561
     object Label1: TLabel
       AlignWithMargins = True
       Left = 4
@@ -3707,8 +3705,6 @@ object Form1: TForm1
     Height = 600
     Align = alClient
     TabOrder = 0
-    ExplicitWidth = 584
-    ExplicitHeight = 561
     object FoundLabel: TLabel
       Left = 231
       Top = 139
@@ -3723,10 +3719,9 @@ object Form1: TForm1
       Height = 569
       Align = alLeft
       ItemHeight = 15
+      Sorted = True
       TabOrder = 0
       OnDblClick = MediaListClick
-      ExplicitLeft = -2
-      ExplicitHeight = 575
     end
     object MainToolBar: TToolBar
       AlignWithMargins = True
@@ -3737,9 +3732,6 @@ object Form1: TForm1
       ButtonHeight = 23
       Caption = 'View'
       TabOrder = 2
-      ExplicitLeft = 1
-      ExplicitTop = 1
-      ExplicitWidth = 998
       object OptionsButton: TSpeedButton
         Left = 0
         Top = 0
@@ -3755,7 +3747,7 @@ object Form1: TForm1
         Width = 928
         Height = 23
         Margins.Left = 10
-        Align = alClient
+        Align = alRight
         Alignment = taRightJustify
         AutoSize = False
         Caption = 'Playlist: All'
@@ -3765,24 +3757,23 @@ object Form1: TForm1
       end
     end
     object VideoPlayer: TWindowsMediaPlayer
-      AlignWithMargins = True
-      Left = 324
-      Top = 33
-      Width = 672
-      Height = 563
+      Left = 321
+      Top = 30
+      Width = 678
+      Height = 569
       Align = alClient
       TabOrder = 1
       OnPlayStateChange = VideoPlayerPlayStateChange
-      ExplicitLeft = 4
-      ExplicitTop = 4
-      ExplicitWidth = 245
-      ExplicitHeight = 240
+      ExplicitLeft = 324
+      ExplicitTop = 16
+      ExplicitWidth = 672
+      ExplicitHeight = 580
       ControlData = {
         000300000800000000000500000000000000F03F030000000000050000000000
         0000000008000200000000000300010000000B00FFFF0300000000000B00FFFF
         08000200000000000300320000000B00000008000A000000660075006C006C00
         00000B0000000B0000000B00FFFF0B00FFFF0B00000008000200000000000800
-        020000000000080002000000000008000200000000000B00000074450000303A
+        020000000000080002000000000008000200000000000B00000013460000CF3A
         0000}
     end
   end
@@ -3822,10 +3813,11 @@ object Form1: TForm1
         OnClick = Removeallmedia1Click
       end
     end
-    object Modes1: TMenuItem
-      Caption = 'Modes'
-      object Playlisteditor1: TMenuItem
-        Caption = 'Playlist editor'
+    object View1: TMenuItem
+      Caption = 'Configuration'
+      object togglePlayListButton: TMenuItem
+        Caption = 'lbOnCreate'
+        OnClick = togglePlayListButtonClick
       end
     end
   end

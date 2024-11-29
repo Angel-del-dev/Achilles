@@ -27,13 +27,13 @@ type
     Createplaylist1: TMenuItem;
     Removeplaylist1: TMenuItem;
     Rename1: TMenuItem;
-    Modes1: TMenuItem;
-    Playlisteditor1: TMenuItem;
     N2: TMenuItem;
     Removeselected1: TMenuItem;
     lbCurrentPlaylist: TLabel;
     PlaylistsPopup: TPopupMenu;
     Removeallmedia1: TMenuItem;
+    View1: TMenuItem;
+    togglePlayListButton: TMenuItem;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure MediaListClick(Sender: TObject);
@@ -43,6 +43,7 @@ type
     procedure OptionsButtonClick(Sender: TObject);
     procedure lbCurrentPlaylistClick(Sender: TObject);
     procedure Removeallmedia1Click(Sender: TObject);
+    procedure togglePlayListButtonClick(Sender: TObject);
   private
     { Private declarations }
     function ReadFile(FileRoute:string):string;
@@ -52,6 +53,7 @@ type
     procedure WriteToFile(Route: string; Data: string);
     function SavedListToString():string;
     procedure RecursiveFolderScan(Route: string);
+    procedure togglePlayListExecute();
   public
     { Public declarations }
   end;
@@ -152,6 +154,19 @@ begin
    end;
 end;
 
+procedure TForm1.togglePlayListExecute;
+begin
+    togglePlayListButton.Caption := 'Show Playlist';
+    MediaList.Visible := not MediaList.Visible;
+    if MediaList.Visible then
+      togglePlayListButton.Caption := 'Hide Playlist';
+end;
+
+procedure TForm1.togglePlayListButtonClick(Sender: TObject);
+begin
+    togglePlayListExecute;
+end;
+
 procedure TForm1.FormTree(Configuration: TJSONObject);
   var
     FileRoute: string;
@@ -170,7 +185,7 @@ begin
         JsonArray := (Pair.JsonValue as TJSONArray);
         for I := 0 to JsonArray.Count -1 do
         begin
-            Route := JsonArray.Get(I).Value;
+            Route := JsonArray.items[I].Value;
             MediaList.Items.Add(GetLastSeparatedByDelimiter('\', Route));
             SavedFileList.Add(Route);
         end;
@@ -217,6 +232,8 @@ begin
     end;
   end;
   ParseAndFormTree(DataFile);
+
+  togglePlayListButton.Caption := 'Hide Playlist';
 end;
 
 procedure TForm1.AddFileClick(Sender: TObject);
