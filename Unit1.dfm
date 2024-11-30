@@ -4,7 +4,7 @@ object Form1: TForm1
   Anchors = [akLeft, akTop, akRight, akBottom]
   Caption = 'Achilles'
   ClientHeight = 600
-  ClientWidth = 1000
+  ClientWidth = 999
   Color = clBtnFace
   Constraints.MinHeight = 600
   Constraints.MinWidth = 1000
@@ -3669,7 +3669,7 @@ object Form1: TForm1
   object Loader: TPanel
     Left = 0
     Top = 0
-    Width = 1000
+    Width = 999
     Height = 600
     Align = alClient
     TabOrder = 1
@@ -3678,7 +3678,7 @@ object Form1: TForm1
       AlignWithMargins = True
       Left = 4
       Top = 4
-      Width = 992
+      Width = 991
       Height = 592
       Align = alClient
       Alignment = taCenter
@@ -3701,7 +3701,7 @@ object Form1: TForm1
   object ControlsPanel: TPanel
     Left = 0
     Top = 0
-    Width = 1000
+    Width = 999
     Height = 600
     Align = alClient
     TabOrder = 0
@@ -3727,7 +3727,7 @@ object Form1: TForm1
       AlignWithMargins = True
       Left = 4
       Top = 4
-      Width = 992
+      Width = 991
       Height = 23
       ButtonHeight = 23
       Caption = 'View'
@@ -3746,11 +3746,11 @@ object Form1: TForm1
         Top = 0
         Width = 928
         Height = 23
+        Hint = 'Current PlayList'
         Margins.Left = 10
         Align = alRight
         Alignment = taRightJustify
         AutoSize = False
-        Caption = 'Playlist: All'
         PopupMenu = PlaylistsPopup
         Layout = tlCenter
         OnClick = lbCurrentPlaylistClick
@@ -3759,21 +3759,19 @@ object Form1: TForm1
     object VideoPlayer: TWindowsMediaPlayer
       Left = 321
       Top = 30
-      Width = 678
+      Width = 677
       Height = 569
       Align = alClient
       TabOrder = 1
       OnPlayStateChange = VideoPlayerPlayStateChange
-      ExplicitLeft = 324
-      ExplicitTop = 16
-      ExplicitWidth = 672
-      ExplicitHeight = 580
+      ExplicitWidth = 245
+      ExplicitHeight = 240
       ControlData = {
         000300000800000000000500000000000000F03F030000000000050000000000
         0000000008000200000000000300010000000B00FFFF0300000000000B00FFFF
         08000200000000000300320000000B00000008000A000000660075006C006C00
         00000B0000000B0000000B00FFFF0B00FFFF0B00000008000200000000000800
-        020000000000080002000000000008000200000000000B00000013460000CF3A
+        020000000000080002000000000008000200000000000B000000F8450000CF3A
         0000}
     end
   end
@@ -3809,7 +3807,7 @@ object Form1: TForm1
         Caption = 'Remove selected media'
       end
       object Removeallmedia1: TMenuItem
-        Caption = 'Remove all media'
+        Caption = 'Remove all media from current playlist'
         OnClick = Removeallmedia1Click
       end
     end
@@ -3824,5 +3822,33 @@ object Form1: TForm1
   object PlaylistsPopup: TPopupMenu
     Left = 40
     Top = 32
+  end
+  object MediaplayerConnection: TFDConnection
+    Params.Strings = (
+      'ConnectionDef=MediaPlayer')
+    Connected = True
+    LoginPrompt = False
+    Left = 30
+    Top = 446
+  end
+  object PlaylistsTable: TFDQuery
+    Active = True
+    Connection = MediaplayerConnection
+    SQL.Strings = (
+      'SELECT * FROM PLAYLISTS')
+    Left = 30
+    Top = 502
+  end
+  object MediaTable: TFDQuery
+    Connection = MediaplayerConnection
+    SQL.Strings = (
+      'SELECT * FROM MEDIA WHERE PLAYLIST = :PLAYLIST')
+    Left = 97
+    Top = 501
+    ParamData = <
+      item
+        Name = 'PLAYLIST'
+        ParamType = ptInput
+      end>
   end
 end
