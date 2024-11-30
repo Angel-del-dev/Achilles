@@ -3665,6 +3665,9 @@ object Form1: TForm1
     F03F0000F03F0000800100008001000080010000000100000001000000010000
     800100008001000080010000800100008000000007F0000007E10000FFFF0000}
   OnCreate = FormCreate
+  DesignSize = (
+    999
+    600)
   TextHeight = 15
   object Loader: TPanel
     Left = 0
@@ -3715,11 +3718,10 @@ object Form1: TForm1
     object MediaList: TListBox
       Left = 1
       Top = 30
-      Width = 320
+      Width = 296
       Height = 569
       Align = alLeft
       ItemHeight = 15
-      Sorted = True
       TabOrder = 0
       OnDblClick = MediaListClick
     end
@@ -3750,6 +3752,7 @@ object Form1: TForm1
         Margins.Left = 10
         Align = alRight
         Alignment = taRightJustify
+        Anchors = [akLeft, akRight]
         AutoSize = False
         PopupMenu = PlaylistsPopup
         Layout = tlCenter
@@ -3757,13 +3760,14 @@ object Form1: TForm1
       end
     end
     object VideoPlayer: TWindowsMediaPlayer
-      Left = 321
+      Left = 297
       Top = 30
-      Width = 677
+      Width = 701
       Height = 569
       Align = alClient
       TabOrder = 1
       OnPlayStateChange = VideoPlayerPlayStateChange
+      ExplicitLeft = 265
       ExplicitWidth = 245
       ExplicitHeight = 240
       ControlData = {
@@ -3771,8 +3775,53 @@ object Form1: TForm1
         0000000008000200000000000300010000000B00FFFF0300000000000B00FFFF
         08000200000000000300320000000B00000008000A000000660075006C006C00
         00000B0000000B0000000B00FFFF0B00FFFF0B00000008000200000000000800
-        020000000000080002000000000008000200000000000B000000F8450000CF3A
+        020000000000080002000000000008000200000000000B00000073480000CF3A
         0000}
+    end
+  end
+  object PlayListConfiguration: TPanel
+    Left = 520
+    Top = 227
+    Width = 281
+    Height = 145
+    Anchors = []
+    TabOrder = 2
+    Visible = False
+    object playListNameConfig: TSearchBox
+      Left = 8
+      Top = 73
+      Width = 265
+      Height = 23
+      TabOrder = 0
+      ButtonWidth = 0
+    end
+    object playListControlsText: TStaticText
+      Left = 0
+      Top = 48
+      Width = 281
+      Height = 19
+      Alignment = taCenter
+      AutoSize = False
+      Caption = 'A name must be provided for the new playlist'
+      TabOrder = 1
+    end
+    object confirmButton: TButton
+      Left = 199
+      Top = 102
+      Width = 75
+      Height = 25
+      Caption = 'Confirm'
+      TabOrder = 2
+      OnClick = confirmButtonClick
+    end
+    object cancelButton: TButton
+      Left = 116
+      Top = 102
+      Width = 75
+      Height = 25
+      Caption = 'Cancel'
+      TabOrder = 3
+      OnClick = cancelButtonClick
     end
   end
   object OptionsPopupButton: TPopupMenu
@@ -3781,13 +3830,12 @@ object Form1: TForm1
     object Addfile1: TMenuItem
       Caption = 'Playlist'
       object Createplaylist1: TMenuItem
-        Caption = 'Create'
-      end
-      object Rename1: TMenuItem
-        Caption = 'Rename current playlist'
+        Caption = 'Create playlist'
+        OnClick = Createplaylist1Click
       end
       object Removeplaylist1: TMenuItem
         Caption = 'Remove current playlist'
+        OnClick = Removeplaylist1Click
       end
       object N1: TMenuItem
         Caption = '-'
@@ -3803,8 +3851,12 @@ object Form1: TForm1
       object N2: TMenuItem
         Caption = '-'
       end
+      object CopySelectedMediaPopup: TMenuItem
+        Caption = 'Copy selected media to playlist'
+      end
       object Removeselected1: TMenuItem
         Caption = 'Remove selected media'
+        OnClick = Removeselected1Click
       end
       object Removeallmedia1: TMenuItem
         Caption = 'Remove all media from current playlist'
@@ -3825,30 +3877,12 @@ object Form1: TForm1
   end
   object MediaplayerConnection: TFDConnection
     Params.Strings = (
+      
+        'Database=C:\Users\angel\Desktop\dev\proyect\delphi\player_projec' +
+        't_customizable\Win32\Release\video_player.sdb'
       'ConnectionDef=MediaPlayer')
-    Connected = True
     LoginPrompt = False
-    Left = 30
-    Top = 446
-  end
-  object PlaylistsTable: TFDQuery
-    Active = True
-    Connection = MediaplayerConnection
-    SQL.Strings = (
-      'SELECT * FROM PLAYLISTS')
-    Left = 30
-    Top = 502
-  end
-  object MediaTable: TFDQuery
-    Connection = MediaplayerConnection
-    SQL.Strings = (
-      'SELECT * FROM MEDIA WHERE PLAYLIST = :PLAYLIST')
-    Left = 97
-    Top = 501
-    ParamData = <
-      item
-        Name = 'PLAYLIST'
-        ParamType = ptInput
-      end>
+    Left = 78
+    Top = 438
   end
 end
