@@ -13,7 +13,7 @@ uses
   FireDAC.Phys, FireDAC.Phys.SQLite, FireDAC.Phys.SQLiteDef,
   FireDAC.Stan.ExprFuncs, FireDAC.Phys.SQLiteWrapper.Stat, FireDAC.VCLUI.Wait,
   FireDAC.Stan.Param, FireDAC.DatS, FireDAC.DApt.Intf, FireDAC.DApt, Data.DB,
-  FireDAC.Comp.DataSet, FireDAC.Comp.Client, Data.DbxSqlite, Data.SqlExpr;
+  FireDAC.Comp.DataSet, FireDAC.Comp.Client, Data.DbxSqlite, Data.SqlExpr, System.Win.Registry, ShlObj;
 
 type
   TForm1 = class(TForm)
@@ -78,6 +78,8 @@ type
     function GetBooleanConfiguration(KeyName: String): Boolean;
     procedure SetBooleanConfiguration(KeyName: String; Value: Boolean);
     procedure DBConnect;
+    procedure LoadMediaDirectly;
+    procedure CreateRegistryIfNecessary;
   public
     { Public declarations }
   end;
@@ -94,6 +96,46 @@ var
 {$R *.dfm}
 
 { Utils }
+
+procedure TForm1.CreateRegistryIfNecessary;
+  var
+    Reg : TRegistry;
+    KeyName, Extension: String;
+begin
+   Reg := TRegistry.Create;
+  try
+    Reg.RootKey := HKEY_CURRENT_USER; // or HKEY_LOCAL_MACHINE, etc.
+    KeyName := '\Software\Classes\Achilles'; // replace with your key name
+    if Reg.KeyExists(KeyName) then
+        exit;
+
+    Extension := '.mp4';
+
+    Reg.RootKey := HKEY_CURRENT_USER;
+    if  Reg.OpenKey('\Software\Classes\.mp4', true) then
+       Reg.WriteString('', 'Achilles');
+    if  Reg.OpenKey('\Software\Classes\Achilles', true) then
+       Reg.WriteString('', 'Achilles video player');
+    if  Reg.OpenKey('\Software\Classes\Achilles\DefaultIcon', true) then
+       Reg.WriteString('', ParamStr(0)+',0');
+    if  Reg.OpenKey('\Software\Classes\Achilles\shell\open\command', true) then
+       Reg.WriteString('', ParamStr(0)+' "%1"');
+
+    SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, 0, 0);
+  finally
+    Reg.Free;
+  end;
+end;
+
+procedure Tform1.LoadMediaDirectly;
+  var I: Integer;
+begin
+  if ParamCount = 0 then
+    exit;
+
+  // Load media by default
+  VideoPlayer.URL := ParamStr(1);
+end;
 
 function TForm1.GetBooleanConfiguration(KeyName: String): Boolean;
   var
@@ -187,9 +229,7 @@ begin
     on E: Exception do
       ShowMessage(E.Message);
   end;
-//                         ExtractFilePath(ParamStr(0)+'\..\video_player.sdb')
-//  MediaplayerConnection.Params.Database := ExtractFilePath(StringList.DelimitedText+'\video_player.sdb');
-//  MediaplayerConnection.Connected := True;
+
 end;
 
 procedure TForm1.WriteToFile(Route: string; Data: string);
@@ -248,7 +288,7 @@ begin
       
     togglePlayListButton.Caption := 'Hide Playlist';
     MediaList.Visible := ShowPlayList;
-    if ShowPlayList then
+    if not ShowPlayList then
       togglePlayListButton.Caption := 'Show Playlist';
 end;
 
@@ -383,11 +423,13 @@ end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
+  CreateRegistryIfNecessary;
   DBConnect;
   LoadPlayLists;
   FormTree;
   
-  togglePlayListExecute(False);  
+  togglePlayListExecute(False);
+  LoadMediaDirectly;
 end;
 
 procedure TForm1.SaveMedia(Route: String);

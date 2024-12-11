@@ -136,7 +136,6 @@
         </DelphiCompile>
         <DCCReference Include="Unit1.pas">
             <Form>Form1</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
