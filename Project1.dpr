@@ -1,5 +1,4 @@
-//program Project1;
-program Achilles;
+program Project1;
 
 uses
   Vcl.Forms,
