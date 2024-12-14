@@ -104,8 +104,8 @@ procedure TForm1.CreateRegistryIfNecessary;
 begin
    Reg := TRegistry.Create;
   try
-    Reg.RootKey := HKEY_CURRENT_USER; // or HKEY_LOCAL_MACHINE, etc.
-    KeyName := '\Software\Classes\Achilles'; // replace with your key name
+    Reg.RootKey := HKEY_CURRENT_USER;
+    KeyName := '\Software\Classes\Achilles';
     if Reg.KeyExists(KeyName) then
         exit;
 
@@ -121,6 +121,7 @@ begin
     if  Reg.OpenKey('\Software\Classes\Achilles\shell\open\command', true) then
        Reg.WriteString('', ParamStr(0)+' "%1"');
 
+    // Notify the new registry changes to the windows API
     SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, 0, 0);
   finally
     Reg.Free;
